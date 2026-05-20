@@ -1,4 +1,5 @@
-FROM ghcr.io/voyz/ibeam:latest
+# Imagen oficial de IBeam en Docker Hub (no ghcr.io)
+FROM voyz/ibeam:latest
 
 USER root
 RUN apt-get update && apt-get install -y \
