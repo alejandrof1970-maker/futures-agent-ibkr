@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  futures-agent:
+    build: .
+    environment:
+      - IBEAM_ACCOUNT=${IBEAM_ACCOUNT}
+      - IBEAM_PASSWORD=${IBEAM_PASSWORD}
+      - IB_ACCOUNT_ID=${IB_ACCOUNT_ID}
+      - IBEAM_GATEWAY_URL=https://localhost:5000
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
