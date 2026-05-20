@@ -1,32 +1,22 @@
-FROM python:3.11-slim
+# gnzsnz/ib-gateway: IB Gateway headless con Java + IBC preinstalados
+FROM gnzsnz/ib-gateway:stable
 
-# Java es requerido por IB Gateway
-RUN apt-get update && apt-get install -y \
-    default-jre-headless \
-    wget \
-    unzip \
-    xvfb \
-    && rm -rf /var/lib/apt/lists/*
+USER root
 
-# Instalar ibeam y dependencias en Python limpio
-# pip install ibeam crea /usr/local/bin/ibeam correctamente
-RUN pip install --no-cache-dir \
-    ibeam \
+# Instalar supervisor (maneja 2 procesos) + Python pip
+RUN apt-get update && apt-get install -y supervisor python3-pip && rm -rf /var/lib/apt/lists/*
+
+# Instalar dependencias Python
+RUN pip3 install --break-system-packages \
+    ib_insync \
     openai \
     pandas \
     numpy \
-    requests \
-    python-dotenv \
-    urllib3
-
-# Verificar que el binario existe
-RUN ls -la /usr/local/bin/ibeam && echo "✅ ibeam OK"
+    python-dotenv
 
 COPY main.py /app/main.py
-COPY start.sh /app/start.sh
-RUN chmod +x /app/start.sh
+COPY supervisord.conf /etc/supervisor/conf.d/agent.conf
 
-WORKDIR /app
-ENV IBEAM_GATEWAY_BASE_URL=https://localhost:5000
-
-CMD ["/app/start.sh"]
+# Anular entrypoint original — supervisor maneja todo
+ENTRYPOINT []
+CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/agent.conf"]
