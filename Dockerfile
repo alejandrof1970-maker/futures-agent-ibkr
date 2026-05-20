@@ -2,9 +2,8 @@ FROM voyz/ibeam:latest
 
 USER root
 
-# Instalar pip y dependencias Python sin venv (conserva el PATH original con ibeam)
-RUN apt-get update && apt-get install -y python3-pip && rm -rf /var/lib/apt/lists/*
-RUN pip3 install --no-cache-dir --break-system-packages \
+# Instalar dependencias en el MISMO venv de IBeam (/opt/venv)
+RUN /opt/venv/bin/pip install --no-cache-dir \
     openai>=1.30.0 \
     pandas>=2.0.0 \
     numpy>=1.26.0 \
