@@ -146,16 +146,16 @@ def main():
     log.info("=" * 55)
 
     ib = IB()
-    for attempt in range(15):
+    for attempt in range(30):
         try:
             ib.connect(IBKR_HOST, IBKR_PORT, clientId=1)
             log.info("✅ Conectado a IB Gateway")
             break
         except Exception as e:
-            log.warning(f"Intento {attempt+1}/15: {e}")
-            time.sleep(20)
+            log.warning(f"Intento {attempt+1}/30: {e} — esperando 30s...")
+            time.sleep(30)
     else:
-        log.error("No se pudo conectar. Verificá credenciales y TRADING_MODE.")
+        log.error("No se pudo conectar tras 15 min. Verificá credenciales.")
         return
 
     log.info(f"Cuenta: {ib.managedAccounts()}")
